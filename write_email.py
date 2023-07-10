@@ -29,12 +29,11 @@ class EmailHandler():
         if(self.verbose):
             print("... success!")
 
-    def write_email(self,email_address,content,from_address=None,
-                    subject=""):
+    def write_email(self,email_address,subject,content,from_address=None):
         """
         This function sends an email to the specified email address with the specified content.
         Input:
-            email_address: address to send the mail [string]
+            email_address: address to send the mail [string or list of strings]
             content: content of the email [string]
             from_address: address to send the mail from [string]
             subject: subject of the email [string]
@@ -61,5 +60,6 @@ class EmailHandler():
             content = fp.read().replace("YOURNAME",sender_name).replace("RECIPIENTNAME",recipient_name)
         return content
 
-eh = EmailHandler("svenheydenreich","smtp.gmail.com",verbose=True)
-# eh.write_email("sheydenr@ucsc.edu",subject="Test",content="TEST")
+if(__name__=="__main__"):
+    eh = EmailHandler("svenheydenreich","smtp.gmail.com",verbose=True)
+    eh.write_email(["svenheydenreich@gmail.com","akolborg@ucsc.edu"],subject="Test",content="TEST")
