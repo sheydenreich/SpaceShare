@@ -58,5 +58,6 @@ if(__name__ == "__main__"):
     from reader import read_google_sheet
 
     df = read_google_sheet()
-    df = optimize(df)
-    plt.scatter(df["date_time_of_airport_arrival"].apply(get_time_of_year), df["cluster"])
+    for kind in ["arrival","departure"]:
+        df = optimize(df,kind=kind)
+    df.to_csv("optimized_clustering.csv")
