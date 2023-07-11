@@ -100,9 +100,6 @@ You have said that you want to leave the hotel at the following times"""
         groups = np.unique(df[f"{kind}_group"])
         for group in groups:
             mask = (df[f"{kind}_group"] == group)
-            if np.sum(mask) < 2:
-                print(f"Skipping group {group} with less than 2 people")
-                continue
             names = df["Name"][mask].values
             first_names = []
             for name in names:
@@ -130,4 +127,24 @@ Best regards,
             # print(message)
         
     # Compose arrival message
-            eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", content=message)
+            if np.sum(mask) < 2:
+                if(kind == "arrival"):
+                    content=f"""Dear {first_names[0]},
+We are writing to you because you have indicated that you would like to share a ride from the airport to your hotel.
+Unfortunately, we have not been able to find any other participants who would like to share a ride at the same time.
+If you would like to share a ride, please contact us and we will try to find a solution.
+
+Best regards,
+    The code/astro Team"""
+                else:
+                    content=f"""Dear {first_names[0]},
+We are writing to you because you have indicated that you would like to share a ride from your hotel to the airport.
+Unfortunately, we have not been able to find any other participants who would like to share a ride at the same time.
+If you would like to share a ride, please contact us and we will try to find a solution.
+
+Best regards,
+    The code/astro Team"""
+                eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", 
+                               content = content)
+            else: # more than 2 people in the group
+                eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", content=message)
