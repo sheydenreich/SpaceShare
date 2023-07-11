@@ -11,7 +11,7 @@ def read_google_sheet(sheet_id = None):
     Parameters
     ----------
     sheet_id : str, optional
-        id of the google sheet extracted from the webpage as */d/sheet_id/edit/*, by default None
+        id of the google sheet extracted from the webpage as */d/sheet_id/edit*, by default None
 
     Returns
     -------
@@ -19,10 +19,10 @@ def read_google_sheet(sheet_id = None):
         Pandas dataframe containing information on google sheet
     """
     prefix = "https://docs.google.com/spreadsheets/d/"
-    if sheet_id is None: sheet_id = "10aSO3AtjG69PFmjaLTmPm_vEPAAWiZsjmswgIDa6bGY"
+    if sheet_id is None: sheet_id = "1riOck-CL8RjVkt_dgcgWhd0DWhUWMifpyb6VLngTrHs"
     
     DF = pd.read_csv(prefix+ sheet_id+ "/gviz/tq?tqx=out:csv")
-    DF = DF.rename(columns={'Preferred_departure_time  (allow for +/– 15 minutes )': 'Preferred_departure_time' })
+    DF = DF.rename(columns={'Preferred_hotel_departure_time (allow for +/– 15 minutes )': 'Preferred_hotel_departure_time' })
     DF = DF.drop(columns= "Timestamp")
 
     return DF
