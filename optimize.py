@@ -5,6 +5,17 @@ from reader import read_google_sheet
 
 df = read_google_sheet()
 
+def get_time_of_day(time):
+    """
+    gives the time as a float in hours (from 0 to 24)
+    """
+    return time.hour + time.minute/60.0
+
+def get_day(time):
+    """
+    gives the day of the month as a float (from 1 to 31)
+    """
+    return time.day
 
 def optimize(df): 
     """ 
