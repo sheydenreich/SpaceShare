@@ -51,12 +51,12 @@ def optimize(df, kind="arrival", max_time_difference = 0.5, max_people_per_car =
         for cluster_idx,new_cluster in enumerate(new_clusters[1:]):
             # Update the clusters
             clusters[new_cluster] = clusters.max() + 1
-
-    return clusters
+    df[f"{kind}_group"] = clusters
+    return df
 
 if(__name__ == "__main__"):
     from reader import read_google_sheet
 
     df = read_google_sheet()
-    df["cluster"] = optimize(df)
+    df = optimize(df)
     plt.scatter(df["date_time_of_airport_arrival"].apply(get_time_of_year), df["cluster"])
