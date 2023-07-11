@@ -1,19 +1,7 @@
-from scipy.cluster.vq import kmeans2
 import numpy as np
 import matplotlib.pyplot as plt
-from reader import read_google_sheet
 from scipy.cluster.hierarchy import linkage, fcluster
-from collections import defaultdict
-from datetime import datetime,timedelta
-
-df = read_google_sheet()
-print(df.columns)
-
-def get_time_of_day(time):
-    """
-    gives the time as a float in hours (from 0 to 24)
-    """
-    return time.hour + time.minute/60.0
+from datetime import timedelta
 
 def get_time_of_year(time):
     """
@@ -21,11 +9,6 @@ def get_time_of_year(time):
     """
     return timedelta(days=time.day, hours=time.hour, minutes=time.minute, seconds=time.second).total_seconds()/3600
 
-def get_day(time):
-    """
-    gives the day of the month as a float (from 1 to 31)
-    """
-    return time.day
 
 def optimize(df, kind="arrival", max_time_difference = 0.5, max_people_per_car = 3): 
     """ 
@@ -71,3 +54,9 @@ def optimize(df, kind="arrival", max_time_difference = 0.5, max_people_per_car =
 
     return clusters
 
+if(__name__ == "__main__"):
+    from reader import read_google_sheet
+
+    df = read_google_sheet()
+    df["cluster"] = optimize(df)
+    plt.scatter(df["date_time_of_airport_arrival"].apply(get_time_of_year), df["cluster"])
