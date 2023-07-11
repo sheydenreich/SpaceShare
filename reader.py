@@ -22,7 +22,6 @@ def read_google_sheet(sheet_id = None):
     if sheet_id is None: sheet_id = "1riOck-CL8RjVkt_dgcgWhd0DWhUWMifpyb6VLngTrHs"
     
     DF = pd.read_csv(prefix+ sheet_id+ "/gviz/tq?tqx=out:csv")
-    DF = DF.rename(columns={'Preferred_hotel_departure_time (allow for +/– 15 minutes )': 'Preferred_hotel_departure_time' })
     DF = DF.drop(columns= "Timestamp")
 
     return DF
