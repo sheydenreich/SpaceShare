@@ -2,8 +2,6 @@
 from getpass import getpass
 import smtplib
 from email.message import EmailMessage
-from datetime import time, timedelta, datetime
-import sys
 
 # This class handles the process of sending emails
 class EmailHandler():
