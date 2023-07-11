@@ -83,5 +83,51 @@ class EmailHandler():
 
 if __name__ == "__main__":
     # Initialize an EmailHandler object and send a test email
+    import pandas as pd
+    import numpy as np
     eh = EmailHandler("svenheydenreich", "smtp.gmail.com", verbose=True)
-    eh.write_email(["svenheydenreich@gmail.com","sheydenr@ucsc.edu"], subject="Test", content="TEST")
+    df = pd.read_csv("optimized_clustering.csv")
+
+    helperstr = {}
+    helperstr["arrival"] = """based on your planned arrival times, we suggest that you share a ride from the airport to your hotel.
+You have said that you want to leave the airport at the following times"""
+    helperstr["departure"] = """based on your planned departure times, we suggest that you share a ride from your hotel to the airport.
+You have said that you want to leave the hotel at the following times"""
+    colnames = {}
+    colnames["arrival"] = "date_time_of_airport_arrival"
+    colnames["departure"] = "date_time_of_hotel_departure"
+    for kind in ["arrival", "departure"]:
+        groups = np.unique(df[f"{kind}_group"])
+        for group in groups:
+            mask = (df[f"{kind}_group"] == group)
+            if np.sum(mask) < 2:
+                print(f"Skipping group {group} with less than 2 people")
+                continue
+            names = df["Name"][mask].values
+            first_names = []
+            for name in names:
+                first_names.append(name.split(" ")[0]) #only address by first names
+            arrival_times = df[colnames[kind]][mask].values
+            emails = list(df["Email"][mask].values)
+        
+            address = ""
+            for name in first_names:
+                address += name+", "
+            
+            deptimes = ""
+            for x in range(len(first_names)):
+                deptimes += "\t"+names[x]+": "+arrival_times[x]+"\n "
+            message = f"""
+Dear {address}
+
+{helperstr[kind]}:\n{deptimes}
+Please contact each other and organize a ride together. If you have any questions, please contact us.
+
+Best regards,
+    The code/astro Team
+            """
+            print("Writing to: ",emails)
+            # print(message)
+        
+    # Compose arrival message
+            eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", content=message)

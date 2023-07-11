@@ -1,3 +1,6 @@
+# VScode folders
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -151,6 +154,9 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# csv files
+*.csv
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
