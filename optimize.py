@@ -2,8 +2,12 @@ from scipy.cluster.vq import kmeans2
 import numpy as np
 import matplotlib.pyplot as plt
 from reader import read_google_sheet
+from scipy.cluster.hierarchy import linkage, fcluster
+from collections import defaultdict
+from datetime import datetime,timedelta
 
 df = read_google_sheet()
+print(df.columns)
 
 def get_time_of_day(time):
     """
@@ -11,13 +15,19 @@ def get_time_of_day(time):
     """
     return time.hour + time.minute/60.0
 
+def get_time_of_year(time):
+    """
+    gives the time as a float in months (from 0 to 12)
+    """
+    return timedelta(days=time.day, hours=time.hour, minutes=time.minute, seconds=time.second).total_seconds()/3600
+
 def get_day(time):
     """
     gives the day of the month as a float (from 1 to 31)
     """
     return time.day
 
-def optimize(df): 
+def optimize(df, kind="arrival", max_time_difference = 0.5, max_people_per_car = 3): 
     """ 
     This function uses a kmeans clustering algorithm to group participants into shared rides based on airport arrival
     or departures times. 
@@ -29,27 +39,35 @@ def optimize(df):
     It returns a pandas dataframe with a new coloumn indicating the ride groups
     """
 
-# Get the preferred departure times from the dataframe
-#times = df['Preferred_departure_time'] 
-times = np.array([1.30, 1.15, 3.45, 5.00, 10, 12, 2, 2.30, 2, 2.05])
-features = np.reshape(times, (-1,1)) # appropriate dimensions for kmeans
+    assert kind in ["arrival", "departure"], "kind must be either 'arrival' or 'departure'"
+    if(kind=="arrival"):
+        times = df["date_time_of_airport_arrival"].apply(get_time_of_year)
+    else:
+        times = df["date_time_of_hotel_departure"].apply(get_time_of_year)
 
-# Turn the 1d times into 2d features (requred by scipy) by adding a column of zeros
-#features = np.vstack((times, np.zeros(np.size(times))))
-#input_data = whiten(features) # whiten rescales the data by it's variance, I don't think that's useful for this project.
+    # Reshape the data to the format needed for the linkage function
+    data = np.array(times).reshape(-1, 1)
 
-ngroups = int(len(times)/3)
-centroids, labels = kmeans2(features, k = ngroups)
+    # Create a dendrogram using the 'ward' method to minimize variance in each cluster
+    Z = linkage(data, 'ward')
 
-# get the number of persons in each group:
-counts = np.bincount(labels)
+    # Set a maximum time difference (let's say 15 minutes) for each group
+    clusters = fcluster(Z, max_time_difference, criterion='distance')
 
-colors = ['red', 'blue', 'black', 'green', 'orange']
+    counts = np.bincount(clusters)
 
-plt.figure()
-#plt.plot(features[:, 0], features[:, 1], '*')
-#plt.plot(codebook[:, 0], codebook[:, 1], 'x')
-for i in range(ngroups):
-    plt.plot(features[labels == i], 'o', color = colors[i])
-    plt.plot(centroids[i], 'x', color = colors[i])
-plt.show()
+    too_many_people = np.where(counts > max_people_per_car)[0]
+
+    for idx in too_many_people:
+        # Find the people in the cluster
+        people = np.where(clusters == idx)[0]
+        # Sort the people by their time
+        people = people[np.argsort(times[people])]
+        # Split the people into groups of 3
+        new_clusters = np.array_split(people, len(people) // 3 + 1)
+        for cluster_idx,new_cluster in enumerate(new_clusters[1:]):
+            # Update the clusters
+            clusters[new_cluster] = clusters.max() + 1
+
+    return clusters
+
