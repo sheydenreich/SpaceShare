@@ -2,6 +2,7 @@
 from getpass import getpass
 import smtplib
 from email.message import EmailMessage
+import numpy as np
 
 # This class handles the process of sending emails
 class EmailHandler():
@@ -81,12 +82,14 @@ class EmailHandler():
         return content
 
 
-if __name__ == "__main__":
+def send_emails(df,email_username, email_smtp_domain, email_password=None, email_smtp_port=587):
     # Initialize an EmailHandler object and send a test email
-    import pandas as pd
-    import numpy as np
-    eh = EmailHandler("svenheydenreich", "smtp.gmail.com", verbose=True)
-    df = pd.read_csv("optimized_clustering.csv")
+    eh = EmailHandler(email_username, email_domain = email_smtp_domain, 
+                      port = email_smtp_port, password = email_password, verbose=True)
+    # df = pd.read_csv("optimized_clustering.csv")
+    if not ("arrival_group" in df.columns and "departure_group" in df.columns):
+        raise AssertionError("Error: arrival_group and departure_group columns not found in dataframe! \n"\
+                             +"Please run the optimize routine first")
 
     helperstr = {}
     helperstr["arrival"] = """based on your planned arrival times, we suggest that you share a ride from the airport to your hotel.
