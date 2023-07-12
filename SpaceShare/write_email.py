@@ -6,19 +6,22 @@ import numpy as np
 
 # This class handles the process of sending emails
 class EmailHandler():
-    
-    # The initializer function, sets up SMTP server and logs in
+    """A class to handle email operations including sending emails and reading email content from a file."""
     def __init__(self, email_username, email_domain="smtp.gmail.com", port=587, password=None, verbose=False):
-        """Initializes the EmailHandler class.
+        """
+        Initializes the EmailHandler class.
 
         Args:
             email_username (str): The username of the email.
             email_domain (str, optional): The email domain. Defaults to 'smtp.gmail.com'.
-            port (int, optional): The port to use. Defaults to 587.
-            password (str, optional): The email password. If not provided, the user will be prompted for it. 
-            verbose (bool, optional): If set to True, login attempts will be printed. Defaults to False.
+            port (int, optional): The port to use for SMTP. Defaults to 587.
+            password (str, optional): The password of the email. If None, prompts for input. Defaults to None.
+            verbose (bool, optional): If True, prints login attempts. Defaults to False.
+
+        Raises:
+            SMTPAuthenticationError: If email login fails.
         """
-        
+
         if password is None:
             self.password = getpass()  # Get the password securely if not provided
         else:
@@ -38,15 +41,24 @@ class EmailHandler():
 
     # Function to write and send an email
     def write_email(self, email_address, subject, content, from_address=None):
-        """Writes and sends an email.
+        """
+        Writes and sends an email.
 
         Args:
-            email_address (list): The email addresses to send to.
+            email_address (str): The recipient email address.
             subject (str): The subject of the email.
             content (str): The content of the email.
-            from_address (str, optional): The from address. If not provided, it defaults to the username provided when initializing the class.
-        """
-        
+            from_address (str, optional): The sender's email address. If None, the initialized username is used. Defaults to None.
+
+        Returns:
+            int: 0 if the email is sent successfully.
+
+        Raises:
+            SMTPRecipientsRefused: If recipient’s mail server did not accept the email.
+            SMTPHeloError: If the server didn’t reply properly to the HELO greeting.
+            SMTPSenderRefused: If the server didn’t accept the from_addr.
+            SMTPDataError: If the server replied with an unexpected error code.
+        """        
         msg = EmailMessage()
         msg.set_content(content)
 
@@ -63,9 +75,10 @@ class EmailHandler():
             server.send_message(msg)
         return 0
     
-    # Function to read and format content from a text file
+
     def read_content_from_textfile(self, textfile, sender_name, recipient_name):
-        """Reads a text file and replaces placeholders with sender and recipient names.
+        """
+        Reads a text file and replaces placeholders with sender and recipient names.
 
         Args:
             textfile (str): The path to the text file.
@@ -74,8 +87,11 @@ class EmailHandler():
 
         Returns:
             str: The content of the text file with placeholders replaced.
+
+        Raises:
+            FileNotFoundError: If the provided textfile path does not exist.
         """
-        
+
         with open(textfile) as fp:
             # Read the file and replace placeholder names
             content = fp.read().replace("YOURNAME", sender_name).replace("RECIPIENTNAME", recipient_name)
@@ -83,7 +99,30 @@ class EmailHandler():
 
 
 def send_emails(df,email_username, email_smtp_domain, email_password=None, email_smtp_port=587):
-    # Initialize an EmailHandler object and send a test email
+    """
+    Function that sends emails to the participants of a ride share program based on groups created.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The DataFrame containing participant information, including names, email addresses, and groups.
+        Required columns are ["Name", "Email", "arrival_group", "departure_group", 
+        "date_time_of_airport_arrival", "date_time_of_hotel_departure"].
+    email_username : str
+        The username of the email to be used to send emails.
+    email_smtp_domain : str
+        The SMTP domain for the email to be used.
+    email_password : str, optional
+        The password of the email to be used to send emails. If None, user will be prompted for password. Default is None.
+    email_smtp_port : int, optional
+        The SMTP port to be used for the email server. Default is 587.
+
+    Raises
+    ------
+    AssertionError
+        If 'arrival_group' and 'departure_group' columns are not found in the DataFrame.
+    """
+    
     eh = EmailHandler(email_username, email_domain = email_smtp_domain, 
                       port = email_smtp_port, password = email_password, verbose=True)
     # df = pd.read_csv("optimized_clustering.csv")

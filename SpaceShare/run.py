@@ -9,6 +9,15 @@ import configparser
 config = configparser.ConfigParser()
 
 def run(config_file = "default.cfg"):
+    """
+    Main function that uses the configuration file to read a google sheet, optimize ride share groups,
+    and then send emails to the participants.
+
+    Parameters
+    ----------
+    config_file : str, optional
+        The path to the configuration file that contains the email credentials and settings. Default is "default.cfg".
+    """
     
     config.read(config_file)
     email_username = config["EMAIL"]["username"].replace(" ","")
