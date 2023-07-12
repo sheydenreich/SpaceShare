@@ -1,1 +1,3 @@
-# when2leave
+# SpaceShare
+
+Package to setup ride and hotel room sharing.
