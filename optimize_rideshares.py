@@ -54,10 +54,3 @@ def optimize(df, kind="arrival", max_time_difference = 0.5, max_people_per_car =
     df[f"{kind}_group"] = clusters
     return df
 
-if(__name__ == "__main__"):
-    from reader import read_google_sheet
-
-    df = read_google_sheet()
-    for kind in ["arrival","departure"]:
-        df = optimize(df,kind=kind)
-    df.to_csv("optimized_clustering.csv")
