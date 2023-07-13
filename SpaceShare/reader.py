@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 
-def read_google_sheet(sheet_id = None):
+def read_google_sheet(sheet_id):
     """
     Reads in a Google Sheet as a CSV file using pandas. 
     Ensure that the sharing setting for the sheet allows anyone with the link to access it.
@@ -26,7 +26,6 @@ def read_google_sheet(sheet_id = None):
         The default sheet ID used when none is provided is '1riOck-CL8RjVkt_dgcgWhd0DWhUWMifpyb6VLngTrHs'.
     """
     prefix = "https://docs.google.com/spreadsheets/d/"
-    if sheet_id is None: sheet_id = "1riOck-CL8RjVkt_dgcgWhd0DWhUWMifpyb6VLngTrHs"
     
     DF = pd.read_csv(prefix+ sheet_id+ "/gviz/tq?tqx=out:csv")
     DF = DF.drop(columns= "Timestamp")
