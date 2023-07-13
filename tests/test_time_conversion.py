@@ -3,6 +3,10 @@ import pandas as pd
 import pytest
 
 def test_get_time_of_year():
+    """
+    This function tests that the get_time_of_year function correctly converts the datetimes into hour values. 
+    """
+
     # generate a pandas datetime object to test on 
     time = pd.to_datetime('2023-07-13 15:28:00.00',format='%Y-%m-%d %H:%M:%S.%f')
  
