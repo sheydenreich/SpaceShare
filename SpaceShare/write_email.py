@@ -98,7 +98,8 @@ class EmailHandler():
         return content
 
 
-def send_emails(df,email_username, email_smtp_domain, email_password=None, email_smtp_port=587):
+def send_emails(df,email_username, email_smtp_domain, email_password=None, email_smtp_port=587,
+                dry_run=False):
     """
     Function that sends emails to the participants of a ride share program based on groups created.
 
@@ -148,6 +149,7 @@ You have said that you want to leave the hotel at the following times"""
                 first_names.append(name.split(" ")[0]) #only address by first names
             arrival_times = df[colnames[kind]][mask].values
             emails = list(df["Email"][mask].values)
+            phone_numbers = list(df["Phone_number"][mask].values)
         
             address = ""
             for name in first_names:
@@ -155,7 +157,7 @@ You have said that you want to leave the hotel at the following times"""
             
             deptimes = ""
             for x in range(len(first_names)):
-                deptimes += "\t"+names[x]+": "+arrival_times[x]+"\n "
+                deptimes += "\t"+names[x]+": "+arrival_times[x]+", contact number: "+phone_numbers[x]+"\n "
             message = f"""
 Dear {address}
 
@@ -173,7 +175,7 @@ Best regards,
                 if(kind == "arrival"):
                     content=f"""Dear {first_names[0]},
 We are writing to you because you have indicated that you would like to share a ride from the airport to your hotel.
-Unfortunately, we have not been able to find any other participants who would like to share a ride at the same time.
+Unfortunately, we have not been able to find any other participants who arrive at the same time.
 If you would like to share a ride, please contact us and we will try to find a solution.
 
 Best regards,
@@ -181,12 +183,21 @@ Best regards,
                 else:
                     content=f"""Dear {first_names[0]},
 We are writing to you because you have indicated that you would like to share a ride from your hotel to the airport.
-Unfortunately, we have not been able to find any other participants who would like to share a ride at the same time.
+Unfortunately, we have not been able to find any other participants who depart at the same time.
 If you would like to share a ride, please contact us and we will try to find a solution.
 
 Best regards,
     The code/astro Team"""
-                eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", 
-                               content = content)
+                if dry_run:
+                    print("Email subject: ",f"[code/astro] Rideshare for your {kind}")
+                    print("Email content: ",content)
+                else:
+                    eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", 
+                                content = content)
             else: # more than 2 people in the group
-                eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", content=message)
+                if(dry_run):
+                    print("Email subject: ",f"[code/astro] Rideshare for your {kind}")
+                    print("Email content: ",message)
+                else:
+                    eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", 
+                                content=message)
