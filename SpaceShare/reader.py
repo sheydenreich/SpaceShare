@@ -44,8 +44,7 @@ def clean_dataframe(DF):
     DF = DF.drop(columns= "Timestamp")
 
     #convert day-time string into date_time object
-    format_string = "%m/%d/%Y %H:%M:%S"
-    DF["date_time_of_airport_arrival"]  = [datetime.strptime(tt, format_string) for tt in DF["date_time_of_airport_arrival"] ]
-    DF["date_time_of_hotel_departure"]  = [datetime.strptime(tt, format_string) for tt in DF["date_time_of_hotel_departure"] ]
+    DF["date_time_of_airport_arrival"]  = [pd.to_datetime(tt) for tt in DF["date_time_of_airport_arrival"] ]
+    DF["date_time_of_hotel_departure"]  = [pd.to_datetime(tt) for tt in DF["date_time_of_hotel_departure"] ]
 
     return DF
