@@ -8,7 +8,7 @@ import configparser
 # Read the config file
 config = configparser.ConfigParser()
 
-def run(config_file = "default.cfg"):
+def run(config_file = "default.cfg", dry_run = False):
     """
     Main function that uses the configuration file to read a google sheet, optimize ride share groups,
     and then send emails to the participants.
@@ -46,4 +46,5 @@ def run(config_file = "default.cfg"):
 
     df = pd.read_csv("optimized_clustering.csv")
     send_emails(df, email_username=email_username,email_smtp_domain=email_smtp_domain,
-                email_password=email_password,email_smtp_port=email_smtp_port)
+                email_password=email_password,email_smtp_port=email_smtp_port,
+                dry_run=dry_run)
