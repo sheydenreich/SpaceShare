@@ -1,6 +1,5 @@
 numpy
 pandas
 scipy
-email
 configparser
 datetime
