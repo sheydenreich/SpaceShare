@@ -1,8 +1,6 @@
 numpy
 pandas
 scipy
-getpass
-smtplib
 email
 configparser
 datetime
