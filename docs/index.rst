@@ -10,9 +10,12 @@ Welcome to SpaceShare's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   reader.rst
-   write_email.rst
-   optimize_rideshares.rst
+   installation
+   usage
+   reader
+   write_email
+   optimize_rideshares
+   run
 
 Indices and tables
 ==================
