@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.cluster.hierarchy import linkage, fcluster
-from datetime import timedelta
-import calendar
+
 
 def get_time_of_year(time):
     """

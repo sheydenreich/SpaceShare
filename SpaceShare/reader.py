@@ -1,7 +1,4 @@
 import pandas as pd
-from datetime import datetime
-
-
 
 
 def read_google_sheet(sheet_id):
