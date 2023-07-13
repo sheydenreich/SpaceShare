@@ -1,11 +1,11 @@
 from SpaceShare.optimize_rideshares import get_time_of_year
-from datetime import datetime
+import pandas as pd
 import pytest
 
 def test_get_time_of_year():
-    # generate a datetime object to test on 
-    time = datetime.datetime(2023, 7, 13, 15, 28, 00)
-
+    # generate a pandas datetime object to test on 
+    time = pd.to_datetime('2023-07-13 15:28:00.00',format='%Y-%m-%d %H:%M:%S.%f')
+ 
     #calculate the number of seconds of the year to the given date using the function
     func_time = get_time_of_year(time)
 
@@ -13,4 +13,16 @@ def test_get_time_of_year():
     check_time = 4671.466666666666
 
     # assert correctness to within a minute
-    assert check_time == pytest.approx(func_time, abs = 1.0*60/3600)
+    assert check_time == pytest.approx(func_time, abs = 1.0/3600)
+
+    ## Check new years eve 
+    time = pd.to_datetime('2013-12-31 23:30:05', format = '%Y-%m-%d %H:%M:%S.%f')
+
+
+    ## Check zero value 
+    time = pd.to_datetime('0000-00-00 00:00:00.00',format='%Y-%m-%d %H:%M:%S.%f')
+    func_time = get_time_of_year(time)
+    check_time = 365*24 + 23 + 30/60 + 5/3600.
+
+    assert check_time == pytest.approx(func_time, abs = 1.0/3600)
+
