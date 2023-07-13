@@ -21,7 +21,9 @@ def run(config_file = "default.cfg"):
 
     config.read(config_file)
     email_username = config["EMAIL"]["username"].replace(" ","")
-    email_password = config.get("EMAIL","password",fallback=None).replace(" ","")
+    email_password = config.get("EMAIL","password",fallback=None)
+    if email_password is not None:
+        email_password = email_password.replace(" ","")
     email_smtp_domain = config["EMAIL"]["smtp_domain"].replace(" ","")
     email_smtp_port = int(config["EMAIL"]["smtp_port"])
 
