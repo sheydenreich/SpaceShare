@@ -148,6 +148,7 @@ You have said that you want to leave the hotel at the following times"""
                 first_names.append(name.split(" ")[0]) #only address by first names
             arrival_times = df[colnames[kind]][mask].values
             emails = list(df["Email"][mask].values)
+            phone_numbers = list(df["Phone_number"][mask].values)
         
             address = ""
             for name in first_names:
@@ -155,7 +156,7 @@ You have said that you want to leave the hotel at the following times"""
             
             deptimes = ""
             for x in range(len(first_names)):
-                deptimes += "\t"+names[x]+": "+arrival_times[x]+"\n "
+                deptimes += "\t"+names[x]+": "+arrival_times[x]+", contact number: "+phone_numbers[x]+"\n "
             message = f"""
 Dear {address}
 
@@ -173,7 +174,7 @@ Best regards,
                 if(kind == "arrival"):
                     content=f"""Dear {first_names[0]},
 We are writing to you because you have indicated that you would like to share a ride from the airport to your hotel.
-Unfortunately, we have not been able to find any other participants who would like to share a ride at the same time.
+Unfortunately, we have not been able to find any other participants who arrive at the same time.
 If you would like to share a ride, please contact us and we will try to find a solution.
 
 Best regards,
@@ -181,7 +182,7 @@ Best regards,
                 else:
                     content=f"""Dear {first_names[0]},
 We are writing to you because you have indicated that you would like to share a ride from your hotel to the airport.
-Unfortunately, we have not been able to find any other participants who would like to share a ride at the same time.
+Unfortunately, we have not been able to find any other participants who depart at the same time.
 If you would like to share a ride, please contact us and we will try to find a solution.
 
 Best regards,
