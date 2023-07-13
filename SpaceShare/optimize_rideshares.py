@@ -2,20 +2,6 @@ import numpy as np
 from scipy.cluster.hierarchy import linkage, fcluster
 from datetime import timedelta
 import calendar
-number_of_days = np.zeros(12)
-number_of_days[0] = 0
-number_of_days[1] = number_of_days[0]+31
-number_of_days[2] = number_of_days[1]+28
-number_of_days[3] = number_of_days[2]+31
-number_of_days[4] = number_of_days[3]+30
-number_of_days[5] = number_of_days[4]+31
-number_of_days[6] = number_of_days[5]+31
-number_of_days[7] = number_of_days[6]+31
-number_of_days[8] = number_of_days[7]+31
-number_of_days[9] = number_of_days[8]+31
-number_of_days[10] = number_of_days[9]+31
-number_of_days[11] = number_of_days[10]+31
-number_of_days[12] = number_of_days[11]+31
 
 def get_time_of_year(time):
     """
@@ -37,6 +23,7 @@ def get_time_of_year(time):
         AttributeError: If the input datetime object doesn't have day, hour, minute, 
         and second attributes.
     """
+    print(type(time))
     number_of_days = np.zeros(12,dtype=int)
     for i in range(11):
         number_of_days[i+1] = number_of_days[i]+calendar.monthrange(time.year,i+1)[1]
