@@ -3,6 +3,7 @@ from getpass import getpass
 import smtplib
 from email.message import EmailMessage
 import numpy as np
+import pandas as pd
 
 # This class handles the process of sending emails
 class EmailHandler():
@@ -157,7 +158,11 @@ You have said that you want to leave the hotel at the following times"""
             
             deptimes = ""
             for x in range(len(first_names)):
-                deptimes += "\t"+names[x]+": "+arrival_times[x]+", contact number: "+phone_numbers[x]+"\n "
+                deptimes += "\t"+names[x]+": "+pd.to_datetime(arrival_times[x]).strftime("%b %d, %I:%M %p")
+                # if not phone_numbers[x]=="NaN":
+                #     deptimes +=", contact number: "+phone_numbers[x]
+                # TODO: to implement in later release
+                deptimes +="\n "
             message = f"""
 Dear {address}
 

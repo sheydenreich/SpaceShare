@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.cluster.hierarchy import linkage, fcluster
-from datetime import timedelta
+
 
 def get_time_of_year(time):
     """
@@ -22,7 +22,7 @@ def get_time_of_year(time):
         AttributeError: If the input datetime object doesn't have day, hour, minute, 
         and second attributes.
     """
-    return timedelta(days=time.day, hours=time.hour, minutes=time.minute, seconds=time.second).total_seconds()/3600
+    return time.day_of_year*24 + time.hour + time.minute/60 + time.second/3600
 
 
 def optimize(df, kind="arrival", max_time_difference = 0.5, max_people_per_car = 3): 
