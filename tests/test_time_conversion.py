@@ -21,10 +21,6 @@ def test_get_time_of_year():
 
     ## Check new years eve 
     time = pd.to_datetime('2013-12-31 23:30:05.00', format = '%Y-%m-%d %H:%M:%S.%f')
-
-
-    ## Check zero value 
-    time = pd.to_datetime('0000-00-00 00:00:00.00',format='%Y-%m-%d %H:%M:%S.%f')
     func_time = get_time_of_year(time)
     check_time = 365*24 + 23 + 30/60 + 5/3600.
 
