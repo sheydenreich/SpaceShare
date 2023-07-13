@@ -18,19 +18,23 @@ def run(config_file = "default.cfg"):
     config_file : str, optional
         The path to the configuration file that contains the email credentials and settings. Default is "default.cfg".
     """
-    
+
     config.read(config_file)
     email_username = config["EMAIL"]["username"].replace(" ","")
     email_password = config.get("EMAIL","password",fallback=None).replace(" ","")
     email_smtp_domain = config["EMAIL"]["smtp_domain"].replace(" ","")
     email_smtp_port = int(config["EMAIL"]["smtp_port"])
 
+    google_sheet_id = config["GOOGLE_SHEET"]["sheet_id"].replace(" ","")
+
+    max_waittime = float(config["OPTIMIZATION"]["max_wait_time"])
+    max_people_per_car = int(config["OPTIMIZATION"]["max_people_per_car"])
     
 
 
-    df = read_google_sheet()
+    df = read_google_sheet(sheet_id=google_sheet_id)
     for kind in ["arrival","departure"]:
-        df = optimize(df,kind=kind)
+        df = optimize(df,kind=kind,max_waittime=max_waittime,max_people_per_car=max_people_per_car)
     df.to_csv("optimized_clustering.csv")
     user_input = "n"
     while user_input.lower() not in ["y","yes"]:
