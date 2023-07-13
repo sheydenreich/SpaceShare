@@ -28,6 +28,19 @@ def read_google_sheet(sheet_id):
     prefix = "https://docs.google.com/spreadsheets/d/"
     
     DF = pd.read_csv(prefix+ sheet_id+ "/gviz/tq?tqx=out:csv")
+    return clean_dataframe(DF)
+
+def clean_dataframe(DF):
+    """
+    Cleans the input DataFrame by dropping the 'Timestamp' column and converting the 'date_time_of_airport_arrival'
+    and 'date_time_of_hotel_departure' columns from strings to datetime objects.
+
+    Args:
+        DF (pandas.DataFrame): The DataFrame to clean.
+
+    Returns:
+        pandas.DataFrame: The cleaned DataFrame.
+    """
     DF = DF.drop(columns= "Timestamp")
 
     #convert day-time string into date_time object
