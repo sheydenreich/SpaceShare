@@ -98,7 +98,8 @@ class EmailHandler():
         return content
 
 
-def send_emails(df,email_username, email_smtp_domain, email_password=None, email_smtp_port=587):
+def send_emails(df,email_username, email_smtp_domain, email_password=None, email_smtp_port=587,
+                dry_run=False):
     """
     Function that sends emails to the participants of a ride share program based on groups created.
 
@@ -187,7 +188,16 @@ If you would like to share a ride, please contact us and we will try to find a s
 
 Best regards,
     The code/astro Team"""
-                eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", 
-                               content = content)
+                if dry_run:
+                    print("Email subject: ",f"[code/astro] Rideshare for your {kind}")
+                    print("Email content: ",content)
+                else:
+                    eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", 
+                                content = content)
             else: # more than 2 people in the group
-                eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", content=message)
+                if(dry_run):
+                    print("Email subject: ",f"[code/astro] Rideshare for your {kind}")
+                    print("Email content: ",message)
+                else:
+                    eh.write_email(emails, subject=f"[code/astro] Rideshare for your {kind}", 
+                                content=message)
