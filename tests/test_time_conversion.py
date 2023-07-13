@@ -20,7 +20,7 @@ def test_get_time_of_year():
     assert check_time == pytest.approx(func_time, abs = 1.0/3600)
 
     ## Check new years eve 
-    time = pd.to_datetime('2013-12-31 23:30:05', format = '%Y-%m-%d %H:%M:%S.%f')
+    time = pd.to_datetime('2013-12-31 23:30:05.00', format = '%Y-%m-%d %H:%M:%S.%f')
 
 
     ## Check zero value 
