@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-import regit 
+import re
 
 # auto-updating version code stolen from RadVel
 def get_property(prop, project):
