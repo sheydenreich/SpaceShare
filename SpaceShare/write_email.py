@@ -8,7 +8,9 @@ import pandas as pd
 # This class handles the process of sending emails
 class EmailHandler():
     """A class to handle email operations including sending emails and reading email content from a file."""
-    def __init__(self, email_username, email_domain="smtp.gmail.com", port=587, password=None, verbose=False):
+    def __init__(self, email_username, email_domain="smtp.gmail.com", 
+                 port=587, password=None, verbose=False, 
+                 test_login = False):
         """
         Initializes the EmailHandler class.
 
@@ -22,23 +24,27 @@ class EmailHandler():
         Raises:
             SMTPAuthenticationError: If email login fails.
         """
-
         if password is None:
-            self.password = getpass()  # Get the password securely if not provided
+            if(test_login):
+                self.password = getpass()  # Get the password securely if not provided
+            else:
+                self.password = None
         else:
             self.password = password
+
         self.username = email_username
         self.domain = email_domain
         self.verbose = verbose
         self.port = port
-        if self.verbose:
-            print("Trying login...")
-        # Create an SMTP server instance and log in
-        with smtplib.SMTP(self.domain, self.port) as server:
-            server.starttls()  # Upgrade the connection to a secure one using TLS
-            server.login(self.username, self.password)
-        if self.verbose:
-            print("... success!")
+        if(test_login):
+            if self.verbose:
+                print("Trying login...")
+            # Create an SMTP server instance and log in
+            with smtplib.SMTP(self.domain, self.port) as server:
+                server.starttls()  # Upgrade the connection to a secure one using TLS
+                server.login(self.username, self.password)
+            if self.verbose:
+                print("... success!")
 
     # Function to write and send an email
     def write_email(self, email_address, subject, content, from_address=None):
@@ -60,6 +66,8 @@ class EmailHandler():
             SMTPSenderRefused: If the server didn’t accept the from_addr.
             SMTPDataError: If the server replied with an unexpected error code.
         """        
+        if(self.password is None):
+            self.password = getpass()
         msg = EmailMessage()
         msg.set_content(content)
 
@@ -100,7 +108,7 @@ class EmailHandler():
 
 
 def send_emails(df,email_username, email_smtp_domain, email_password=None, email_smtp_port=587,
-                dry_run=False):
+                dry_run=False, test_login=True):
     """
     Function that sends emails to the participants of a ride share program based on groups created.
 
@@ -126,7 +134,8 @@ def send_emails(df,email_username, email_smtp_domain, email_password=None, email
     """
     
     eh = EmailHandler(email_username, email_domain = email_smtp_domain, 
-                      port = email_smtp_port, password = email_password, verbose=True)
+                      port = email_smtp_port, password = email_password, verbose=True,
+                      test_login = test_login)
     # df = pd.read_csv("optimized_clustering.csv")
     if not ("arrival_group" in df.columns and "departure_group" in df.columns):
         raise AssertionError("Error: arrival_group and departure_group columns not found in dataframe! \n"\
