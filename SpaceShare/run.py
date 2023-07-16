@@ -41,11 +41,14 @@ def run_spaceshare(config_file = "default.cfg", dry_run = True,
     df.sort_values(by=["arrival_group","departure_group"],inplace=True)
     df.to_csv("optimized_clustering.csv")
     if(confirm_groups):
-        user_input = "n"
-        while user_input.lower() not in ["y","yes"]:
+        user_input = "none"
+        while user_input.lower() not in ["y","yes","n","no"]:
             user_input = input("The groups have been assigned. Please take a moment to inspect the results in optimized_clustering.csv \n"\
                                 +"If you want, you can manually make changes to the document. \n"\
                                 +"Do you want to send the emails? (y/n)")
+        if user_input.lower() in ["n","no"]:
+            print("Exiting without sending emails")
+            return
 
         df = pd.read_csv("optimized_clustering.csv")
     send_emails(df, email_username=email_username,email_smtp_domain=email_smtp_domain,
